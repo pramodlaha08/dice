@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ludo Dice Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex flex-col items-center p-5 min-h-screen">
+    <!-- Header -->
+    <h1 class="text-3xl font-bold mb-5">Ludo Dice Simulator</h1>
+
+    <!-- Play Counts -->
+    <div
+      id="playCounts"
+      class="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-4 mb-5 items-center justify-center"
+    >
+      <!-- Label and input fields with icons, now responsive -->
+      <div class="flex flex-col items-center">
+        <label for="king">
+          <img
+            src="images/king.png"
+            class="w-12 sm:w-16 md:w-20"
+            alt="King Icon"
+          />
+        </label>
+        <input
+          type="number"
+          class="play-count w-12 sm:w-16 md:w-20 p-2 text-center"
+          data-index="1"
+          readonly
+          value="0"
+        />
+      </div>
+
+      <div class="flex flex-col items-center">
+        <label for="queen">
+          <img
+            src="images/queen.png"
+            class="w-12 sm:w-16 md:w-20"
+            alt="Queen Icon"
+          />
+        </label>
+        <input
+          type="number"
+          class="play-count w-12 sm:w-16 md:w-20 p-2 text-center"
+          data-index="2"
+          readonly
+          value="0"
+        />
+      </div>
+
+      <div class="flex flex-col items-center">
+        <label for="jack">
+          <img
+            src="images/jack.png"
+            class="w-12 sm:w-16 md:w-20"
+            alt="Jack Icon"
+          />
+        </label>
+        <input
+          type="number"
+          class="play-count w-12 sm:w-16 md:w-20 p-2 text-center"
+          data-index="3"
+          readonly
+          value="0"
+        />
+      </div>
+
+      <div class="flex flex-col items-center">
+        <label for="diamond">
+          <img
+            src="images/diamond.png"
+            class="w-12 sm:w-16 md:w-20"
+            alt="Diamond Icon"
+          />
+        </label>
+        <input
+          type="number"
+          class="play-count w-12 sm:w-16 md:w-20 p-2 text-center"
+          data-index="4"
+          readonly
+          value="0"
+        />
+      </div>
+
+      <div class="flex flex-col items-center">
+        <label for="spades">
+          <img
+            src="images/spades.png"
+            class="w-12 sm:w-16 md:w-20"
+            alt="Spades Icon"
+          />
+        </label>
+        <input
+          type="number"
+          class="play-count w-12 sm:w-16 md:w-20 p-2 text-center"
+          data-index="5"
+          readonly
+          value="0"
+        />
+      </div>
+
+      <div class="flex  flex-col items-center">
+        <label for="club">
+          <img
+            src="images/club.png"
+            class="w-12 sm:w-16 md:w-44"
+            alt="Club Icon"
+          />
+        </label>
+        <input
+          type="number"
+          class="play-count w-12 sm:w-16 md:w-20 p-2 text-center"
+          data-index="6"
+          readonly
+          value="0"
+        />
+      </div>
+    </div>
+
+    <!-- Dice Buttons -->
+    <div class="grid grid-cols-3 gap-4 mb-5">
+      <!-- Buttons for each dice value from 1 to 6 -->
+      <button
+        class="dice-button bg-blue-500 text-white font-bold p-4 rounded hover:bg-blue-600"
+        data-value="1"
+      >
+        1
+      </button>
+      <button
+        class="dice-button bg-blue-500 text-white font-bold p-4 rounded hover:bg-blue-600"
+        data-value="2"
+      >
+        2
+      </button>
+      <button
+        class="dice-button bg-blue-500 text-white font-bold p-4 rounded hover:bg-blue-600"
+        data-value="3"
+      >
+        3
+      </button>
+      <button
+        class="dice-button bg-blue-500 text-white font-bold p-4 rounded hover:bg-blue-600"
+        data-value="4"
+      >
+        4
+      </button>
+      <button
+        class="dice-button bg-blue-500 text-white font-bold p-4 rounded hover:bg-blue-600"
+        data-value="5"
+      >
+        5
+      </button>
+      <button
+        class="dice-button bg-blue-500 text-white font-bold p-4 rounded hover:bg-blue-600"
+        data-value="6"
+      >
+        6
+      </button>
+    </div>
+
+    <!-- Reset Button -->
+    <button
+      id="resetButton"
+      class="bg-red-500 text-white font-bold p-4 rounded hover:bg-red-600"
+    >
+      Reset
+    </button>
+
+    <script>
+      // Retrieve stored play counts or initialize
+      let playCounts = JSON.parse(localStorage.getItem("playCounts")) || [
+        0, 0, 0, 0, 0, 0,
+      ];
+      updateDisplay();
+
+      // Select buttons and add event listeners
+      document.querySelectorAll(".dice-button").forEach((button) => {
+        button.addEventListener("click", handleDiceClick);
+      });
+
+      // Handle Dice Click
+      function handleDiceClick(event) {
+        const value = parseInt(event.target.dataset.value);
+        if (confirm(`Do you want to confirm selection of ${value}?`)) {
+          updateCounts(value);
+        }
+      }
+
+      // Update counts based on button clicked
+      function updateCounts(value) {
+        playCounts = playCounts.map((count, index) =>
+          index + 1 === value ? 0 : count + 1
+        );
+        localStorage.setItem("playCounts", JSON.stringify(playCounts));
+        updateDisplay();
+      }
+
+      // Update UI based on playCounts
+      function updateDisplay() {
+        document.querySelectorAll(".play-count").forEach((input, index) => {
+          input.value = playCounts[index];
+        });
+      }
+
+      // Reset button functionality
+      document.getElementById("resetButton").addEventListener("click", () => {
+        if (confirm("Do you want to reset all counts?")) {
+          playCounts = [0, 0, 0, 0, 0, 0];
+          localStorage.removeItem("playCounts");
+          updateDisplay();
+        }
+      });
+    </script>
+  </body>
+</html>
